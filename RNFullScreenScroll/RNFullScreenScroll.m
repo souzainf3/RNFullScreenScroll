@@ -19,6 +19,7 @@ static char __fullScreenScrollContext;
     CGFloat startContentOffset;
     CGFloat lastContentOffset;
     BOOL hidden;
+    BOOL isAnimating;
     
     
     __weak UINavigationController* _navigationController;
@@ -50,10 +51,13 @@ static char __fullScreenScrollContext;
         
         _shouldHideNavigationBarOnScroll = YES;
         _shouldHideTabBarOnScroll = YES;
+        _shouldHideUIBarsWhenNotDragging = NO;
+
 
         self.scrollView = scrollView;
         
         hidden = NO;
+        isAnimating = NO;
         
     }
     return self;
@@ -106,18 +110,29 @@ static char __fullScreenScrollContext;
 }
 
 -(void)expand:(BOOL)animated {
-    if(hidden)
-        return;
+    @synchronized(self){
+        if(hidden)
+            return;
+        hidden = YES;
+        isAnimating = animated;
+    }
     
-    hidden = YES;
-    
-    if (_shouldHideTabBarOnScroll && self.isTabBarExisting)
+    if (_shouldHideTabBarOnScroll && self.isTabBarExisting){
         [self.tabBarController setTabBarHidden:YES
                                       animated:animated];
+    }
     
-    if (_shouldHideNavigationBarOnScroll && self.isNavigationBarExisting)
+    if (_shouldHideNavigationBarOnScroll && self.isNavigationBarExisting){
         [self.navigationController setNavigationBarHidden:YES
                                                  animated:animated];
+    }
+    
+    @synchronized(self){
+        if (animated){
+            [self performSelector:@selector(endAnimation:) withObject:nil afterDelay:0.2];
+        }
+    }
+    
 }
 
 
@@ -127,10 +142,12 @@ static char __fullScreenScrollContext;
 }
 
 -(void)contract:(BOOL)animated {
-    if(!hidden)
-        return;
-    
-    hidden = NO;
+    @synchronized(self){
+        if(!hidden)
+            return;
+        hidden = NO;
+        isAnimating = animated;
+    }
     
     if (_shouldHideTabBarOnScroll && !self.isTabBarExisting)
         [self.tabBarController setTabBarHidden:NO
@@ -139,8 +156,19 @@ static char __fullScreenScrollContext;
     if (_shouldHideNavigationBarOnScroll && !self.isNavigationBarExisting)
         [self.navigationController setNavigationBarHidden:NO
                                                  animated:animated];
+    
+    @synchronized(self){
+        if (animated){
+            [self performSelector:@selector(endAnimation:) withObject:nil afterDelay:0.2];
+        }
+    }
 }
 
+-(void)endAnimation:(id)sender {
+    @synchronized(self){
+        isAnimating = NO;
+    }
+}
 
 #pragma mark -
 
@@ -187,36 +215,80 @@ static char __fullScreenScrollContext;
 
 #pragma mark KVO
 
+#define MAX_SHIFT_PER_SCROLL    10  // used when _shouldHideUIBarsGradually=YES
+
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if (context == &__fullScreenScrollContext) {
         
-        if ([keyPath isEqualToString:@"tintColor"]) {
-            // comment-out (should tintColor even when disabled)
-            //if (!self.enabled) return;
+        if ([keyPath isEqualToString:@"contentOffset"]) {
             
-            //  [self _removeCustomBackgroundOnUIBar:object];
-            //  [self _addCustomBackgroundOnUIBar:object];
-        }
-        else if ([keyPath isEqualToString:@"contentOffset"]) {
-            
-            CGFloat currentOffset = _scrollView.contentOffset.y;
-            CGFloat differenceFromStart = startContentOffset - currentOffset;
-            CGFloat differenceFromLast = lastContentOffset - currentOffset;
-            lastContentOffset = currentOffset;
+//            CGFloat currentOffset = _scrollView.contentOffset.y;
+//            CGFloat differenceFromStart = startContentOffset - currentOffset;
+//            CGFloat differenceFromLast = lastContentOffset - currentOffset;
+//            lastContentOffset = currentOffset;
             
             
             CGPoint newPoint = [change[NSKeyValueChangeNewKey] CGPointValue];
             CGPoint oldPoint = [change[NSKeyValueChangeOldKey] CGPointValue];
             
+            CGFloat deltaY = newPoint.y - oldPoint.y;
+            if (deltaY == 0.0) return;
+
+            // return if user hasn't dragged but trying to hide UI-bars (e.g. orientation change)
+            if (deltaY > 0 && !self.scrollView.isDragging && !self.shouldHideUIBarsWhenNotDragging) return;
+
+//            CGFloat maxShiftPerScroll = CGFLOAT_MAX;
+//           // if (/*_shouldHideUIBarsGradually && */!isContentHeightTooShortToLimitShiftPerScroll) {
+//                maxShiftPerScroll = MAX_SHIFT_PER_SCROLL;
+//          //  }
+//            
+//            deltaY = MIN(deltaY, maxShiftPerScroll);
+//            
+//            if (deltaY == 0.0) return;
+//            
+//            if (_scrollView.isDecelerating) return;
+//            
+//            // return if user hasn't dragged but trying to hide UI-bars (e.g. orientation change)
+//            if (deltaY > 0 && !self.scrollView.isDragging && !self.shouldHideUIBarsWhenNotDragging) return;
             
-            if (newPoint.y > oldPoint.y && (differenceFromStart) < 0){
-                if(_scrollView.isTracking && (abs(differenceFromLast)>1))
+            
+            if (newPoint.y <= 0){
+                
+                @synchronized(self){
+                    if(!hidden)
+                        return;
+                }
+                [self contract:NO];
+                
+                return;
+            }
+            
+            @synchronized(self){
+                if (isAnimating){
+                    return;
+                }
+            }
+            
+            
+            if (newPoint.y > oldPoint.y /* && (differenceFromStart) < 0*/){
+                if(_scrollView.isTracking && _scrollView.isDragging /* && (abs(differenceFromLast)>1)*/ ){
+                    @synchronized(self){
+                        if(hidden)
+                            return;
+                    }
                     [self expand];
+                }
             }
             else {
-                if(_scrollView.isTracking && (abs(differenceFromLast)>1))
+                if(_scrollView.isTracking && _scrollView.isDragging /* && (abs(differenceFromLast)>1) */){
+                    @synchronized(self){
+                        if(!hidden)
+                            return;
+                    }
                     [self contract];
+                }
             }
         }
     }

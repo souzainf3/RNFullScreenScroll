@@ -11,6 +11,7 @@
 		0040F1B817F0D67E00C2520E /* UITabBarController+hidable.m in Sources */ = {isa = PBXBuildFile; fileRef = 0040F1B317F0D67E00C2520E /* UITabBarController+hidable.m */; };
 		0040F1B917F0D67E00C2520E /* UIViewController+RNFullScreenScroll.m in Sources */ = {isa = PBXBuildFile; fileRef = 0040F1B517F0D67E00C2520E /* UIViewController+RNFullScreenScroll.m */; };
 		0040F1BA17F0D67E00C2520E /* RNFullScreenScroll.m in Sources */ = {isa = PBXBuildFile; fileRef = 0040F1B717F0D67E00C2520E /* RNFullScreenScroll.m */; };
+		00BDA7EF17F1F730005631D0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00BDA7EE17F1F730005631D0 /* Default-568h@2x.png */; };
 		EA076AB715021CDC00AB9B5F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA076AB615021CDC00AB9B5F /* UIKit.framework */; };
 		EA076AB915021CDC00AB9B5F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA076AB815021CDC00AB9B5F /* Foundation.framework */; };
 		EA076ABB15021CDC00AB9B5F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA076ABA15021CDC00AB9B5F /* CoreGraphics.framework */; };
@@ -31,7 +32,7 @@
 		0040F1B517F0D67E00C2520E /* UIViewController+RNFullScreenScroll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+RNFullScreenScroll.m"; sourceTree = "<group>"; };
 		0040F1B617F0D67E00C2520E /* RNFullScreenScroll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNFullScreenScroll.h; sourceTree = "<group>"; };
 		0040F1B717F0D67E00C2520E /* RNFullScreenScroll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNFullScreenScroll.m; sourceTree = "<group>"; };
-		0040F23D17F0D84000C2520E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Desktop/Default-568h@2x.png"; sourceTree = "<group>"; };
+		00BDA7EE17F1F730005631D0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		EA076AB215021CDC00AB9B5F /* ExpandingView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpandingView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA076AB615021CDC00AB9B5F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EA076AB815021CDC00AB9B5F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -96,7 +97,7 @@
 		EA076AA715021CDC00AB9B5F = {
 			isa = PBXGroup;
 			children = (
-				0040F23D17F0D84000C2520E /* Default-568h@2x.png */,
+				00BDA7EE17F1F730005631D0 /* Default-568h@2x.png */,
 				EA076ABC15021CDC00AB9B5F /* ExpandingView */,
 				EA076AB515021CDC00AB9B5F /* Frameworks */,
 				EA076AB315021CDC00AB9B5F /* Products */,
@@ -202,6 +203,7 @@
 			files = (
 				EA076AC115021CDC00AB9B5F /* InfoPlist.strings in Resources */,
 				EA4AFEBB150220DF00E06304 /* TMPostDetailViewController.xib in Resources */,
+				00BDA7EF17F1F730005631D0 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

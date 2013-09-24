@@ -17,11 +17,13 @@
 @property (nonatomic) BOOL shouldHideNavigationBarOnScroll; // default = YES
 @property (nonatomic) BOOL shouldHideTabBarOnScroll;        // default = YES
 
+// if YES, UI-bars can also be hidden via UIWebView's JavaScript calling window.scrollTo(0,1))
+@property (nonatomic) BOOL shouldHideUIBarsWhenNotDragging;             // default = NO
+
 
 - (id)initWithViewController:(UIViewController*)viewController
                   scrollView:(UIScrollView*)scrollView;
 
-// used in UIViewController+YIFullScreenScroll
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewDidAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
