@@ -15,6 +15,7 @@
 
 
 @property (nonatomic) BOOL shouldHideNavigationBarOnScroll; // default = YES
+@property (nonatomic) BOOL shouldHideStatusBarOnScroll;     // default = YES
 @property (nonatomic) BOOL shouldHideTabBarOnScroll;        // default = YES
 
 // if YES, UI-bars can also be hidden via UIWebView's JavaScript calling window.scrollTo(0,1))
