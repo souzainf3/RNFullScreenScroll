@@ -50,6 +50,7 @@ static char __fullScreenScrollContext;
         _viewController = viewController;
         
         _shouldHideNavigationBarOnScroll = YES;
+        _shouldHideStatusBarOnScroll = YES;
         _shouldHideTabBarOnScroll = YES;
         _shouldHideUIBarsWhenNotDragging = NO;
 
@@ -125,6 +126,9 @@ static char __fullScreenScrollContext;
     if (_shouldHideNavigationBarOnScroll && self.isNavigationBarExisting){
         [self.navigationController setNavigationBarHidden:YES
                                                  animated:animated];
+        if (_shouldHideStatusBarOnScroll)
+            [[UIApplication sharedApplication] setStatusBarHidden:YES
+                                                    withAnimation:animated ? UIStatusBarAnimationSlide : UIStatusBarAnimationNone];
     }
     
     @synchronized(self){
@@ -153,9 +157,13 @@ static char __fullScreenScrollContext;
         [self.tabBarController setTabBarHidden:NO
                                       animated:animated];
     
-    if (_shouldHideNavigationBarOnScroll && !self.isNavigationBarExisting)
+    if (_shouldHideNavigationBarOnScroll && !self.isNavigationBarExisting){
         [self.navigationController setNavigationBarHidden:NO
                                                  animated:animated];
+        if (_shouldHideStatusBarOnScroll)
+            [[UIApplication sharedApplication] setStatusBarHidden:NO
+                                                    withAnimation:animated ? UIStatusBarAnimationSlide : UIStatusBarAnimationNone];
+    }
     
     @synchronized(self){
         if (animated){
@@ -178,6 +186,8 @@ static char __fullScreenScrollContext;
 {
     [self.navigationController setNavigationBarHidden:hidden
                                              animated:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:hidden
+                                            withAnimation:UIStatusBarAnimationSlide];
 }
 
 - (void)viewDidAppear:(BOOL)animated
